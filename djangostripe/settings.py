@@ -12,9 +12,10 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 
+import my_settings
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -26,7 +27,6 @@ SECRET_KEY = '@=4+xg=o^f5cfl934_-=mtg*j@3$$nby$yw&=)x^oh-8uprn1('
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -72,7 +72,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'djangostripe.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -82,7 +81,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -102,7 +100,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -116,7 +113,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
@@ -124,8 +120,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [Path(BASE_DIR).joinpath('static')]
 
 # Stripe configuration
-STRIPE_PUBLISHABLE_KEY = '<your test publishable key here>'
-STRIPE_SECRET_KEY = '<your test secret key here>'
+STRIPE_PUBLISHABLE_KEY = my_settings.STRIPE_PUBLISHABLE_KEY
+STRIPE_SECRET_KEY = my_settings.STRIPE_SECRET_KEY
 
 # This is only required when using webhooks
-STRIPE_ENDPOINT_SECRET = '<your endpoint secret key here>'
+STRIPE_ENDPOINT_SECRET = my_settings.STRIPE_ENDPOINT_SECRET
