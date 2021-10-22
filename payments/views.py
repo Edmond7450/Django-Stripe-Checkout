@@ -50,7 +50,7 @@ def create_checkout_session(request):
                         'name': 'T-shirt',
                         'quantity': 1,
                         'currency': 'usd',
-                        'amount': '2000',
+                        'amount': '3000',
                     }
                 ]
             )
