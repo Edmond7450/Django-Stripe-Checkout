@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 
-import my_settings
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
@@ -118,10 +116,3 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [Path(BASE_DIR).joinpath('static')]
-
-# Stripe configuration
-STRIPE_PUBLISHABLE_KEY = my_settings.STRIPE_PUBLISHABLE_KEY
-STRIPE_SECRET_KEY = my_settings.STRIPE_SECRET_KEY
-
-# This is only required when using webhooks
-STRIPE_ENDPOINT_SECRET = my_settings.STRIPE_ENDPOINT_SECRET

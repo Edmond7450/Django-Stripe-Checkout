@@ -1,9 +1,10 @@
 import stripe
 from django.contrib.auth.models import User
-from django.conf import settings
 from django.http.response import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
+
+import my_settings
 
 
 class HomePageView(TemplateView):
@@ -13,7 +14,7 @@ class HomePageView(TemplateView):
 @csrf_exempt
 def stripe_config(request):
     if request.method == 'GET':
-        stripe_config = {'publicKey': settings.STRIPE_PUBLISHABLE_KEY}
+        stripe_config = {'publicKey': my_settings.STRIPE_PUBLISHABLE_KEY}
         return JsonResponse(stripe_config, safe=False)
 
 
@@ -21,7 +22,7 @@ def stripe_config(request):
 def create_checkout_session(request):
     if request.method == 'GET':
         domain_url = 'http://localhost:8000/'
-        stripe.api_key = settings.STRIPE_SECRET_KEY
+        stripe.api_key = my_settings.STRIPE_SECRET_KEY
         try:
             # Create new Checkout Session for the order
             # Other optional params include:
@@ -39,6 +40,22 @@ def create_checkout_session(request):
             # If we offer a SaaS service it would also be good to allow only authenticated users to purchase
             # anything on our site.
 
+            # checkout_session = stripe.checkout.Session.create(
+            #     client_reference_id=request.user.id if request.user.is_authenticated else None,
+            #     success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
+            #     cancel_url=domain_url + 'cancelled/',
+            #     payment_method_types=['card'],
+            #     mode='payment',
+            #     line_items=[
+            #         {
+            #             'name': 'Base Cost',
+            #             'quantity': 1,
+            #             'currency': 'usd',
+            #             'amount': '5200',
+            #         }
+            #     ],
+            # )
+
             checkout_session = stripe.checkout.Session.create(
                 client_reference_id=request.user.id if request.user.is_authenticated else None,
                 success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
@@ -47,12 +64,13 @@ def create_checkout_session(request):
                 mode='payment',
                 line_items=[
                     {
-                        'name': 'T-shirt',
+                        'price': my_settings.STRIPE_PRICE_ID,
                         'quantity': 1,
-                        'currency': 'usd',
-                        'amount': '3000',
                     }
-                ]
+                ],
+                automatic_tax={
+                    'enabled': True
+                }
             )
             return JsonResponse({'sessionId': checkout_session['id']})
         except Exception as e:
@@ -61,8 +79,8 @@ def create_checkout_session(request):
 
 @csrf_exempt
 def stripe_webhook(request):
-    stripe.api_key = settings.STRIPE_SECRET_KEY
-    endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
+    stripe.api_key = my_settings.STRIPE_SECRET_KEY
+    endpoint_secret = my_settings.STRIPE_ENDPOINT_SECRET
     payload = request.body
     sig_header = request.META['HTTP_STRIPE_SIGNATURE']
     event = None
